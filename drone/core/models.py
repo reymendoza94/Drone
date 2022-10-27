@@ -1,5 +1,7 @@
+from importlib.metadata import requires
 from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator,RegexValidator
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -29,6 +31,10 @@ class Drone (models.Model):
     weight_limit = models.FloatField(validators=[MaxValueValidator(500)]) #max limit 500
     battery_capacity = models.PositiveIntegerField()
     state = models.CharField(max_length=15, choices=STATE, default= 'idle')
+
+    def clean(self) -> None:
+        if self.serial_number:
+            raise ValidationError({'serial_number':'no debe ser vacio'})
 
 
 class Medication (models.Model):
