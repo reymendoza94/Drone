@@ -1,6 +1,3 @@
-from email import message
-from enum import unique
-from re import U
 from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator,RegexValidator
 
@@ -41,5 +38,5 @@ class Medication (models.Model):
     image = models.ImageField()
 
 class DispatchController (models.Model):
-    drone = models.ForeignKey(Drone, on_delete=models.CASCADE, unique=True)
+    drone = models.ForeignKey(Drone, on_delete=models.CASCADE)
     medication = models.ManyToManyField(Medication)

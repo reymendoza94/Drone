@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import get_status
+from .views import create_drone
 
 urlpatterns = [
-    path('status', get_status, name="check_status"),
+    path('create_drone/', create_drone, name="create_drone"),
 ]
