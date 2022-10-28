@@ -21,20 +21,19 @@ MODEL = [
     ('heavyweight', 'Heavyweight'),
 ]
 
-VALIDATOR_LIST = [RegexValidator('[A-Za-z0-9_-]', message="Only latters, number, underscore and dash")]
+VALIDATOR_LIST = [RegexValidator('^[A-Za-z0-9_-]', message="Only latters, number, underscore and dash")]
 VALIDATOR_LIST2 = [RegexValidator('^[A-Z0-9_]+$', message="Only upper case latters , number and underscore")]
 
 
 class Drone (models.Model):
     serial_number = models.CharField(max_length=100)
     model = models.CharField(max_length=15, choices=MODEL)
-    weight_limit = models.FloatField(validators=[MaxValueValidator(500)]) #max limit 500
-    battery_capacity = models.PositiveIntegerField()
+    weight_limit = models.FloatField(verbose_name='weight in gr', validators=[MaxValueValidator(500)], default = 500) #max limit 500
+    battery_capacity = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
     state = models.CharField(max_length=15, choices=STATE, default= 'idle')
 
-    def clean(self) -> None:
-        if self.serial_number:
-            raise ValidationError({'serial_number':'no debe ser vacio'})
+    def __str__(self):
+        return self.serial_number
 
 
 class Medication (models.Model):
@@ -43,6 +42,13 @@ class Medication (models.Model):
     code = models.CharField(max_length=100, validators= VALIDATOR_LIST2) 
     image = models.ImageField()
 
+    def __str__(self):
+        return self.name
+
 class DispatchController (models.Model):
     drone = models.ForeignKey(Drone, on_delete=models.CASCADE)
     medication = models.ManyToManyField(Medication)
+
+    # def clean(self) -> None:
+    #     if not self.serial_number:
+    #         raise ValidationError({'serial_number':'no debe ser vacio'})
