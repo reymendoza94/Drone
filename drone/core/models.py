@@ -44,7 +44,7 @@ class Medication (models.Model):
     image = models.ImageField()
 
     def __str__(self):
-        return self.name
+        return self.code
 
 class DispatchController (models.Model):
     drone = models.ForeignKey(Drone, on_delete=models.CASCADE)
@@ -66,4 +66,4 @@ class DispatchController (models.Model):
         #         self.drone.weight_limit = total_w
         #     else:
         #         raise ValidationError({"medication": "Limit weight"})
-        return super().save(self, *args, **kwargs)
+        super().save(self, *args, **kwargs)
