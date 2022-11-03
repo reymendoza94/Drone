@@ -21,3 +21,13 @@ class DispatchControllerForm(forms.ModelForm):
     class Meta:
         model = DispatchController
         fields = "__all__"
+
+    # def save(self) -> None:
+    #     print(self.data)
+    #     ids = str(self.data['medication']).split(', ')
+    #     for id_medication in ids:
+
+
+    #         return super().save()
+
+       
