@@ -66,4 +66,4 @@ class DispatchController (models.Model):
         #         self.drone.weight_limit = total_w
         #     else:
         #         raise ValidationError({"medication": "Limit weight"})
-        super().save(self, *args, **kwargs)
+        return super().save(self, *args, **kwargs)

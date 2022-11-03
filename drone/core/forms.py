@@ -22,8 +22,12 @@ class DispatchControllerForm(forms.ModelForm):
         model = DispatchController
         fields = "__all__"
 
-    # def clean(self) -> Dict[str, Any]:
+    # def save(self) -> None:
+    #     print(self.data)
+    #     ids = str(self.data['medication']).split(', ')
+    #     for id_medication in ids:
 
-    #     return super().clean()
+
+    #         return super().save()
 
        
