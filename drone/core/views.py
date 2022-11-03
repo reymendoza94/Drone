@@ -38,7 +38,7 @@ def create_dispatch_controler(request):
     
     if request.method == 'POST':
         data = request.POST.copy()       
-        form = DispatchControllerForm(data)
+        # form = DispatchControllerForm(data)
         print(data)
         if not Drone.objects.filter(id=data['drone']):
             return JsonResponse({"error":"Drone not found"}, status=404)
@@ -61,22 +61,39 @@ def create_dispatch_controler(request):
                     else:
                         return JsonResponse({"error": "The weight of the medication exceeds the loading weight limit."})
 
-        if form.is_valid():
-            form.save()
+        # if form.is_valid():
+        #     form.save()
             return JsonResponse({"succes":"Dispatch create"}, status=201)
         else:
             return JsonResponse({"error": form.errors}, status=400)
             
-def medication_drone(request):
+def list_medication_drone(request):
     if request.method == 'POST':
         data = request.POST.copy()
         model = DispatchController
 
         print (model.objects.filter(drone__id=data))
+
+def list_drone_available(request):
+    model = Drone
+    list_drone = model.objects.filter(model.battery_capacity >= 25, model.state=='idle')
+    if not list_drone:
+        return JsonResponse({"error": "Don't drone available"},status= 404)
+    return JsonResponse({"drone": list_drone}, status=201)
             
 
+def check_drone_battery(request):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        model = Drone
 
+        if not model.objects.filter(id=data['drone']):
+            return JsonResponse({"error": "Drone not found"}, status=404)
+        
+        level_battery = model.objects.get(id=data['drone'])
+        return JsonResponse({"succes":"The battery is {}"},level_battery,status=201)
 
+        
 
         
     
