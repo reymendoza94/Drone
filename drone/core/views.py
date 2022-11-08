@@ -1,11 +1,12 @@
 from xml.dom import ValidationErr
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import DispatchController, Drone, Medication
 from .forms import DroneForm, MedicationForm, DispatchControllerForm
 from django.core import serializers
-# Create your views here.
 
+
+# ---------------Create drone View-------------#
 @csrf_exempt
 def create_drone(request):
     if request.method == 'POST':
@@ -15,9 +16,12 @@ def create_drone(request):
             form.save()
             return JsonResponse({"success":"Drone create"}, status=201)
         else:
-            return JsonResponse({'error': form.errors + "los valores"}, status=400)
+            return JsonResponse({'error': form.errors}, status=400)
+    else:
+        return JsonResponse({"error":"Only POST method supported"})
 
 
+# ---------------Create medication View-------------#
 @csrf_exempt
 def create_medication(request):    
     if request.method == 'POST':
@@ -28,8 +32,11 @@ def create_medication(request):
             return JsonResponse({"success":"Medication create"}, status=201)
         else:
             return JsonResponse({'error': form.errors}, status=400)
+    else:
+        return JsonResponse({"error":"Only POST method supported"})
 
-
+        
+# ---------------Create Dispatch Controller View-------------#
 @csrf_exempt
 def create_dispatch_controler(request):    
     if request.method == 'POST':
@@ -53,30 +60,49 @@ def create_dispatch_controler(request):
                     else:
                         drone.weight_limit = drone.weight_limit - medication.weight
                         drone.save()
-                        
+                       
         form = DispatchControllerForm(data)
         if form.is_valid():
             form.save()               
             return JsonResponse({"success":"Dispatch create"}, status=201)
         else:
             return JsonResponse({'error': form.errors}, status=400)
-            
-def list_medication_drone(request):
-    if request.method == 'POST':
-        data = request.POST.copy()
-        model = DispatchController
+    else:
+        return JsonResponse({"error":"Only POST method supported"})
 
-        print (model.objects.filter(drone__id=data))
 
+# ---------------List Medication by Drone View-------------#           
+def list_medication_drone(request, id):
+    if request.method == 'GET':
+        dispatch = DispatchController.objects.filter(drone__id=id)
+
+        if not dispatch:
+            return JsonResponse({"error": "Dispatch not found"}, status= 404)
+        else:
+            list_medication = dispatch.medication
+            print(list_medication)
+            data = serializers.serialize("json", list_medication)
+            return JsonResponse({"error": data}, status=201)
+    else:
+        return JsonResponse({"error":"Only GET method supported"})
+
+
+# ---------------List Drones Availables View-------------#
 def list_drone_available(request):    
-    list_drone = Drone.objects.filter(battery_capacity__gte=25, state='idle')
-    if not list_drone:
-        return JsonResponse({"error": "Don't drone available"}, status= 404)
-    data = serializers.serialize("json", list_drone)
-    
-    return JsonResponse({"drone": data}, status=201)
-            
+    if request.method == 'GET':        
+        list_drone = Drone.objects.filter(battery_capacity__gte=25, state='idle')
 
+        if not list_drone:
+            return JsonResponse({"error": "Don't drone available"}, status= 404)
+        else:
+            data = serializers.serialize("json", list_drone)        
+            return JsonResponse({"drone": data}, status=201)
+
+    else:
+        return JsonResponse({"error":"Only GET method supported"})
+
+
+# ---------------Chech Drone Battery View-------------#
 def check_drone_battery(request, id):
     if request.method == 'GET':
 

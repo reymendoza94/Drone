@@ -3,6 +3,7 @@ from .models import Drone, Medication,DispatchController
 from django import forms
 
 
+# ---------------Drone Form-------------#
 class DroneForm(forms.ModelForm):
     
     class Meta:
@@ -10,6 +11,7 @@ class DroneForm(forms.ModelForm):
         fields = "__all__"
 
 
+# ---------------Medication Form-------------#
 class MedicationForm(forms.ModelForm):
     
     class Meta:
@@ -17,6 +19,7 @@ class MedicationForm(forms.ModelForm):
         fields = "__all__"
         
 
+# ---------------Dispatch Controller Form-------------#
 class DispatchControllerForm(forms.ModelForm):
     
     class Meta:
