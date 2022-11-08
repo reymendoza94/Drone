@@ -3,6 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import DispatchController, Drone, Medication
 from .forms import DroneForm, MedicationForm, DispatchControllerForm
+from django.core import serializers
 # Create your views here.
 
 @csrf_exempt
@@ -12,7 +13,7 @@ def create_drone(request):
         form = DroneForm(data)
         if form.is_valid():
             form.save()
-            return JsonResponse({"succes":"Drone create"}, status=201)
+            return JsonResponse({"success":"Drone create"}, status=201)
         else:
             return JsonResponse({'error': form.errors + "los valores"}, status=400)
 
@@ -21,10 +22,10 @@ def create_drone(request):
 def create_medication(request):    
     if request.method == 'POST':
         data = request.POST.copy()
-        form = MedicationForm(data)
+        form = MedicationForm(data, request.FILES)
         if form.is_valid():
             form.save()
-            return JsonResponse({"succes":"Medication create"}, status=201)
+            return JsonResponse({"success":"Medication create"}, status=201)
         else:
             return JsonResponse({'error': form.errors}, status=400)
 
@@ -33,8 +34,6 @@ def create_medication(request):
 def create_dispatch_controler(request):    
     if request.method == 'POST':
         data = request.POST.copy()
-        # list_medication = data.get('medication', None).split(',')
-        # print(list_medication)
 
         if not Drone.objects.filter(id=data['drone']):
             return JsonResponse({"error":"Drone not found"}, status=404)  
@@ -58,7 +57,7 @@ def create_dispatch_controler(request):
         form = DispatchControllerForm(data)
         if form.is_valid():
             form.save()               
-            return JsonResponse({"succes":"Dispatch create"}, status=201)
+            return JsonResponse({"success":"Dispatch create"}, status=201)
         else:
             return JsonResponse({'error': form.errors}, status=400)
             
@@ -69,25 +68,26 @@ def list_medication_drone(request):
 
         print (model.objects.filter(drone__id=data))
 
-def list_drone_available(request):
-    model = Drone
-    list_drone = model.objects.filter(model.battery_capacity >= 25, model.state=='idle')
+def list_drone_available(request):    
+    list_drone = Drone.objects.filter(battery_capacity__gte=25, state='idle')
     if not list_drone:
-        return JsonResponse({"error": "Don't drone available"},status= 404)
-    return JsonResponse({"drone": list_drone}, status=201)
+        return JsonResponse({"error": "Don't drone available"}, status= 404)
+    data = serializers.serialize("json", list_drone)
+    
+    return JsonResponse({"drone": data}, status=201)
             
 
-def check_drone_battery(request):
-    if request.method == 'POST':
-        data = request.POST.copy()
-        model = Drone
+def check_drone_battery(request, id):
+    if request.method == 'GET':
 
-        if not model.objects.filter(id=data['drone']):
+        if not Drone.objects.filter(id=id):
             return JsonResponse({"error": "Drone not found"}, status=404)
         
-        level_battery = model.objects.get(id=data['drone'])
-        return JsonResponse({"succes":"The battery is {}"},level_battery,status=201)
-
+        drone = Drone.objects.get(id=id)
+        level_battery = drone.battery_capacity
+        return JsonResponse({"success":"The battery is {}%".format(level_battery)},status=201)
+    else:
+        return JsonResponse({"error":"Only GET method supported"})
         
 
         
