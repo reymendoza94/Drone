@@ -1,5 +1,5 @@
 from dataclasses import fields
-from .models import Drone, Medication
+from .models import Drone, Medication,DispatchController
 from django import forms
 
 
@@ -17,18 +17,11 @@ class MedicationForm(forms.ModelForm):
         fields = "__all__"
         
 
-# class DispatchControllerForm(forms.ModelForm):
+class DispatchControllerForm(forms.ModelForm):
     
-#     class Meta:
-#         model = DispatchController
-#         fields = "__all__"
+    class Meta:
+        model = DispatchController
+        fields = "__all__"
 
-    # def save(self) -> None:
-    #     print(self.data)
-    #     ids = str(self.data['medication']).split(', ')
-    #     for id_medication in ids:
-
-
-    #         return super().save()
 
        
