@@ -50,20 +50,20 @@ class DispatchController (models.Model):
     drone = models.ForeignKey(Drone, on_delete=models.CASCADE)
     medication = models.ManyToManyField(Medication)
 
-    def clean(self) -> None:
-        if DispatchController.objects.filter(drone__id=self.drone.id):
-            if self.drone.state != 'loading':
-                raise ValidationError({"drone": "This drone are {}, cant not by used".format(self.drone.get_state_display())})
+    # def clean(self) -> None:
+    #     if DispatchController.objects.filter(drone__id=self.drone.id):
+    #         if self.drone.state != 'loading':
+    #             raise ValidationError({"drone": "This drone are {}, cant not by used".format(self.drone.get_state_display())})
 
-    def save(self, *args, **kwargs) -> None:
-        self.drone.state = 'loading'
-        self.drone.save()
-        # total_w = 0
-        # if self.medication:
-        #     for v in self.medication.all():
-        #         total_w += v.weight
-        #     if total_w <= 500:
-        #         self.drone.weight_limit = total_w
-        #     else:
-        #         raise ValidationError({"medication": "Limit weight"})
-        return super().save(self, *args, **kwargs)
+    # def save(self, *args, **kwargs) -> None:
+    #     self.drone.state = 'loading'
+    #     self.drone.save()
+    #     # total_w = 0
+    #     # if self.medication:
+    #     #     for v in self.medication.all():
+    #     #         total_w += v.weight
+    #     #     if total_w <= 500:
+    #     #         self.drone.weight_limit = total_w
+    #     #     else:
+    #     #         raise ValidationError({"medication": "Limit weight"})
+    #     return super().save(self, *args, **kwargs)
