@@ -26,7 +26,7 @@ VALIDATOR_LIST2 = [RegexValidator('^[A-Z0-9_]+$', message="Only upper case latte
 class Drone (models.Model):
     serial_number = models.CharField(max_length=100, unique=True)
     model = models.CharField(max_length=15, choices=MODEL)
-    weight_limit = models.FloatField(verbose_name='weight in gr', validators=[MaxValueValidator(500)], default=0)
+    weight_limit = models.FloatField(verbose_name='weight in gr', validators=[MaxValueValidator(500)], default=500)
     battery_capacity = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
     state = models.CharField(max_length=15, choices=STATE, default='idle')
 
