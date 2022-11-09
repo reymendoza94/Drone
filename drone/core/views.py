@@ -60,7 +60,6 @@ def create_dispatch_controler(request):
                     else:
                         drone.weight_limit = drone.weight_limit - medication.weight
                         drone.save()
-                       
         form = DispatchControllerForm(data)
         if form.is_valid():
             form.save()               
@@ -74,7 +73,8 @@ def create_dispatch_controler(request):
 # ---------------List Medication by Drone View-------------#           
 def list_medication_drone(request, id):
     if request.method == 'GET':
-        dispatch = DispatchController.objects.filter(drone__id=id)
+        dispatch = DispatchController.objects.filter(drone_id=id)
+        print(dispatch.drone_id)
 
         if not dispatch:
             return JsonResponse({"error": "Dispatch not found"}, status= 404)
