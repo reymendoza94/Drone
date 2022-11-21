@@ -14,8 +14,7 @@
    pip install -r requirements.txt
    ```
    
-To run any command:
-
+3. To run any command:
    ```shell
    python manage.py <runserver|migrate|...any cmd>
    ```
