@@ -17,5 +17,5 @@
 To run any command:
 
 ```shell
-python manage.py <runserver|migrate|...any cmd>
+   python manage.py <runserver|migrate|...any cmd>
 ```
